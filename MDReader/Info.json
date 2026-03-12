@@ -1,0 +1,56 @@
+{
+  "bundleIdentifier": "com.yourcompany.mdreader",
+  "bundleName": "MDReader",
+  "version": "1.0.0",
+  "build": "1",
+  "minimumOSVersion": "17.0",
+  "supportedOrientations": [
+    "UIInterfaceOrientationPortrait",
+    "UIInterfaceOrientationLandscapeLeft",
+    "UIInterfaceOrientationLandscapeRight"
+  ],
+  "infoPlist": {
+    "UILaunchStoryboardName": "LaunchScreen",
+    "UIApplicationSceneManifest": {
+      "UIApplicationSupportsMultipleScenes": false,
+      "UISceneConfigurations": {
+        "UIWindowSceneSessionRoleApplication": [
+          {
+            "UISceneConfigurationName": "Default Configuration",
+            "UISceneDelegateClassName": "$(PRODUCT_MODULE_NAME).SceneDelegate"
+          }
+        ]
+      }
+    },
+    "UISupportsDocumentBrowser": true,
+    "UIFileSharingEnabled": true,
+    "LSSupportsOpeningDocumentsInPlace": true,
+    "UTImportedTypeDeclarations": [
+      {
+        "UTTypeIdentifier": "net.daringfireball.markdown",
+        "UTTypeConformsTo": ["public.plain-text"],
+        "UTTypeDescription": "Markdown Document",
+        "UTTypeTagSpecification": {
+          "public.filename-extension": ["md", "markdown", "mdown"],
+          "public.mime-type": ["text/markdown", "text/x-markdown"]
+        }
+      },
+      {
+        "UTTypeIdentifier": "public.json",
+        "UTTypeConformsTo": ["public.plain-text"],
+        "UTTypeDescription": "JSON Document",
+        "UTTypeTagSpecification": {
+          "public.filename-extension": ["json"]
+        }
+      },
+      {
+        "UTTypeIdentifier": "public.yaml",
+        "UTTypeConformsTo": ["public.plain-text"],
+        "UTTypeDescription": "YAML Document",
+        "UTTypeTagSpecification": {
+          "public.filename-extension": ["yaml", "yml"]
+        }
+      }
+    ]
+  }
+}
