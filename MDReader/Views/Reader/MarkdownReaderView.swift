@@ -5,9 +5,13 @@ struct MarkdownReaderView: View {
     @State private var content: String = ""
     @State private var isLoading = true
     @State private var readingProgress: Double = 0
+    @AppStorage("readerTheme") private var theme: ReaderTheme = .light
 
     var body: some View {
         ZStack {
+            theme.backgroundColor
+                .ignoresSafeArea()
+
             if isLoading {
                 ProgressView()
             } else {
@@ -51,6 +55,7 @@ struct MarkdownTextView: UIViewRepresentable {
 
     @AppStorage("readerFontSize") private var fontSize: Double = 17
     @AppStorage("readerLineSpacing") private var lineSpacing: Double = 1.5
+    @AppStorage("readerTheme") private var theme: ReaderTheme = .light
 
     func makeUIView(context: Context) -> UITextView {
         let textView = MarkdownRenderingTextView()
@@ -58,12 +63,6 @@ struct MarkdownTextView: UIViewRepresentable {
         textView.isSelectable = true
         textView.isUserInteractionEnabled = true
         textView.showsVerticalScrollIndicator = true
-        textView.backgroundColor = .systemBackground
-
-        // 使用 TextKit 2
-        if let textLayoutManager = textView.textLayoutManager {
-            textLayoutManager.delegate = context.coordinator
-        }
 
         // 配置文本容器
         textView.textContainerInset = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
@@ -78,8 +77,11 @@ struct MarkdownTextView: UIViewRepresentable {
     }
 
     func updateUIView(_ textView: UITextView, context: Context) {
+        // 应用主题背景色
+        textView.backgroundColor = UIColor(theme.backgroundColor)
+
         // 渲染 Markdown
-        let renderer = MarkdownRenderer(fontSize: CGFloat(fontSize), lineSpacing: CGFloat(lineSpacing))
+        let renderer = MarkdownRenderer(fontSize: CGFloat(fontSize), lineSpacing: CGFloat(lineSpacing), theme: theme)
         textView.attributedText = renderer.render(content)
     }
 
@@ -116,10 +118,35 @@ class MarkdownRenderingTextView: UITextView {
 class MarkdownRenderer {
     let fontSize: CGFloat
     let lineSpacing: CGFloat
+    let theme: ReaderTheme
 
-    init(fontSize: CGFloat, lineSpacing: CGFloat) {
+    init(fontSize: CGFloat, lineSpacing: CGFloat, theme: ReaderTheme) {
         self.fontSize = fontSize
         self.lineSpacing = lineSpacing
+        self.theme = theme
+    }
+
+    // 主题相关颜色
+    private var textColor: UIColor {
+        UIColor(theme.textColor)
+    }
+
+    private var secondaryColor: UIColor {
+        theme == .light || theme == .sepia ? .darkGray : .lightGray
+    }
+
+    private var codeBackgroundColor: UIColor {
+        theme == .light ? UIColor(white: 0.95, alpha: 1.0) :
+        theme == .sepia ? UIColor(red: 0.92, green: 0.89, blue: 0.85, alpha: 1.0) :
+        UIColor(white: 0.2, alpha: 1.0)
+    }
+
+    private var codeTextColor: UIColor {
+        theme == .light || theme == .sepia ? .systemPink : UIColor(red: 1.0, green: 0.6, blue: 0.8, alpha: 1.0)
+    }
+
+    private var linkColor: UIColor {
+        theme == .light || theme == .sepia ? .systemBlue : UIColor(red: 0.4, green: 0.7, blue: 1.0, alpha: 1.0)
     }
 
     func render(_ markdown: String) -> NSAttributedString {
@@ -189,7 +216,7 @@ class MarkdownRenderer {
     private func heading(text: String, level: Int) -> NSAttributedString {
         let size = fontSize * (1.8 - Double(level) * 0.2)
         let font = UIFont.systemFont(ofSize: CGFloat(size), weight: .bold)
-        let color: UIColor = level <= 2 ? .label : .secondaryLabel
+        let color: UIColor = level <= 2 ? textColor : secondaryColor
 
         let attributes: [NSAttributedString.Key: Any] = [
             .font: font,
@@ -221,30 +248,35 @@ class MarkdownRenderer {
                 NSAttributedString(
                     string: code,
                     attributes: [
-                        .font: UIFont.monospacedSystemFont(ofSize: fontSize * 0.9, weight: .regular),
-                        .foregroundColor: UIColor.systemPink,
-                        .backgroundColor: UIColor.systemGray6
+                        .font: UIFont.monospacedSystemFont(ofSize: self.fontSize * 0.9, weight: .regular),
+                        .foregroundColor: self.codeTextColor,
+                        .backgroundColor: self.codeBackgroundColor
                     ]
                 )
             }),
-            ("\*\*([^*]+)\*\*", { bold in
+            ("\\*\\*([^*]+)\\*\\*", { bold in
                 NSAttributedString(
                     string: bold,
-                    attributes: [.font: UIFont.boldSystemFont(ofSize: fontSize)]
+                    attributes: [
+                        .font: UIFont.boldSystemFont(ofSize: self.fontSize),
+                        .foregroundColor: self.textColor
+                    ]
                 )
             }),
-            ("\*([^*]+)\*", { italic in
+            ("\\*([^*]+)\\*", { italic in
                 NSAttributedString(
                     string: italic,
-                    attributes: [.font: UIFont.italicSystemFont(ofSize: fontSize)]
+                    attributes: [
+                        .font: UIFont.italicSystemFont(ofSize: self.fontSize),
+                        .foregroundColor: self.textColor
+                    ]
                 )
             }),
-            ("\[([^\]]+)\]\\(([^)]+)\\)", { link in
-                // 简化处理链接
+            ("\\[([^\\]]+)\\]\\(([^)]+)\\)", { link in
                 NSAttributedString(
                     string: link,
                     attributes: [
-                        .foregroundColor: UIColor.systemBlue,
+                        .foregroundColor: self.linkColor,
                         .underlineStyle: NSUnderlineStyle.single.rawValue
                     ]
                 )
@@ -285,7 +317,7 @@ class MarkdownRenderer {
             }
 
             if !matched {
-                result.append(NSAttributedString(string: remaining, attributes: [.font: font]))
+                result.append(NSAttributedString(string: remaining, attributes: [.font: font, .foregroundColor: textColor]))
                 break
             }
         }
@@ -298,8 +330,8 @@ class MarkdownRenderer {
             string: text,
             attributes: [
                 .font: UIFont.monospacedSystemFont(ofSize: fontSize * 0.85, weight: .regular),
-                .foregroundColor: UIColor.label,
-                .backgroundColor: UIColor.systemGray5
+                .foregroundColor: textColor,
+                .backgroundColor: codeBackgroundColor
             ]
         )
     }
@@ -312,7 +344,7 @@ class MarkdownRenderer {
             string: text,
             attributes: [
                 .font: UIFont.italicSystemFont(ofSize: fontSize),
-                .foregroundColor: UIColor.secondaryLabel,
+                .foregroundColor: secondaryColor,
                 .paragraphStyle: paragraphStyle
             ]
         )
@@ -327,6 +359,7 @@ class MarkdownRenderer {
             string: prefix + text,
             attributes: [
                 .font: UIFont.systemFont(ofSize: fontSize),
+                .foregroundColor: textColor,
                 .paragraphStyle: paragraphStyle
             ]
         )
@@ -336,7 +369,7 @@ class MarkdownRenderer {
         let result = NSMutableAttributedString(string: "\u{2015}\u{2015}\u{2015}\u{2015}\u{2015}\u{2015}\u{2015}\u{2015}\u{2015}\u{2015}")
         result.addAttribute(
             .foregroundColor,
-            value: UIColor.separator,
+            value: secondaryColor,
             range: NSRange(location: 0, length: result.length)
         )
         return result

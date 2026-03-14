@@ -7,38 +7,38 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		100000000000000000000001 /* MDReaderApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100000000000000000000002 /* MDReaderApp.swift */; };
-		100000000000000000000003 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100000000000000000000004 /* ContentView.swift */; };
-		100000000000000000000005 /* FileSystemManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100000000000000000000006 /* FileSystemManager.swift */; };
-		100000000000000000000007 /* FileBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100000000000000000000008 /* FileBrowserView.swift */; };
-		100000000000000000000009 /* ReaderContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10000000000000000000000A /* ReaderContainerView.swift */; };
-		10000000000000000000000B /* MarkdownReaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10000000000000000000000C /* MarkdownReaderView.swift */; };
-		10000000000000000000000D /* JSONReaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10000000000000000000000E /* JSONReaderView.swift */; };
-		10000000000000000000000F /* CodeReaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100000000000000000000010 /* CodeReaderView.swift */; };
-		100000000000000000000011 /* FileIndexCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100000000000000000000012 /* FileIndexCache.swift */; };
-		100000000000000000000013 /* LargeFileLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100000000000000000000014 /* LargeFileLoader.swift */; };
-		100000000000000000000015 /* FileActionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100000000000000000000016 /* FileActionsView.swift */; };
+		A00000000000000000000001 /* MDReaderApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000001 /* MDReaderApp.swift */; };
+		A00000000000000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000002 /* ContentView.swift */; };
+		A00000000000000000000003 /* FileSystemManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000003 /* FileSystemManager.swift */; };
+		A00000000000000000000004 /* FileBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000004 /* FileBrowserView.swift */; };
+		A00000000000000000000005 /* ReaderContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000005 /* ReaderContainerView.swift */; };
+		A00000000000000000000006 /* MarkdownReaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000006 /* MarkdownReaderView.swift */; };
+		A00000000000000000000007 /* JSONReaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000007 /* JSONReaderView.swift */; };
+		A00000000000000000000008 /* CodeReaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000008 /* CodeReaderView.swift */; };
+		A00000000000000000000009 /* FileIndexCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000009 /* FileIndexCache.swift */; };
+		A0000000000000000000000A /* LargeFileLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0000000000000000000000A /* LargeFileLoader.swift */; };
+		A0000000000000000000000B /* FileActionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0000000000000000000000B /* FileActionsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		100000000000000000000001 /* MDReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MDReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		100000000000000000000002 /* MDReaderApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDReaderApp.swift; sourceTree = "<group>"; };
-		100000000000000000000004 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		100000000000000000000006 /* FileSystemManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSystemManager.swift; sourceTree = "<group>"; };
-		100000000000000000000008 /* FileBrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileBrowserView.swift; sourceTree = "<group>"; };
-		10000000000000000000000A /* ReaderContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderContainerView.swift; sourceTree = "<group>"; };
-		10000000000000000000000C /* MarkdownReaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownReaderView.swift; sourceTree = "<group>"; };
-		10000000000000000000000E /* JSONReaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONReaderView.swift; sourceTree = "<group>"; };
-		100000000000000000000010 /* CodeReaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeReaderView.swift; sourceTree = "<group>"; };
-		100000000000000000000012 /* FileIndexCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileIndexCache.swift; sourceTree = "<group>"; };
-		100000000000000000000014 /* LargeFileLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeFileLoader.swift; sourceTree = "<group>"; };
-		100000000000000000000016 /* FileActionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileActionsView.swift; sourceTree = "<group>"; };
-		100000000000000000000017 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		100000000000000000000018 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C00000000000000000000001 /* MDReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MDReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B00000000000000000000001 /* MDReaderApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDReaderApp.swift; sourceTree = "<group>"; };
+		B00000000000000000000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		B00000000000000000000003 /* FileSystemManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSystemManager.swift; sourceTree = "<group>"; };
+		B00000000000000000000004 /* FileBrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileBrowserView.swift; sourceTree = "<group>"; };
+		B00000000000000000000005 /* ReaderContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderContainerView.swift; sourceTree = "<group>"; };
+		B00000000000000000000006 /* MarkdownReaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownReaderView.swift; sourceTree = "<group>"; };
+		B00000000000000000000007 /* JSONReaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONReaderView.swift; sourceTree = "<group>"; };
+		B00000000000000000000008 /* CodeReaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeReaderView.swift; sourceTree = "<group>"; };
+		B00000000000000000000009 /* FileIndexCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileIndexCache.swift; sourceTree = "<group>"; };
+		B0000000000000000000000A /* LargeFileLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeFileLoader.swift; sourceTree = "<group>"; };
+		B0000000000000000000000B /* FileActionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileActionsView.swift; sourceTree = "<group>"; };
+		B0000000000000000000000C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B0000000000000000000000D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		100000000000000000000100 /* Frameworks */ = {
+		D00000000000000000000001 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -48,68 +48,84 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		100000000000000000000200 /* MDReader */ = {
+		E00000000000000000000001 /* MDReader */ = {
 			isa = PBXGroup;
 			children = (
-				100000000000000000000002 /* MDReaderApp.swift */,
-				100000000000000000000004 /* ContentView.swift */,
-				100000000000000000000300 /* Models */,
-				100000000000000000000400 /* Views */,
-				100000000000000000000500 /* Utils */,
-				100000000000000000000017 /* Info.plist */,
-				100000000000000000000018 /* Assets.xcassets */,
+				B00000000000000000000001 /* MDReaderApp.swift */,
+				B00000000000000000000002 /* ContentView.swift */,
+				E00000000000000000000002 /* Models */,
+				E00000000000000000000003 /* Views */,
+				E00000000000000000000004 /* Utils */,
+				B0000000000000000000000C /* Info.plist */,
+				B0000000000000000000000D /* Assets.xcassets */,
 			);
 			path = MDReader;
 			sourceTree = "<group>";
 		};
-		100000000000000000000300 /* Models */ = {
+		E00000000000000000000002 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				100000000000000000000006 /* FileSystemManager.swift */,
+				B00000000000000000000003 /* FileSystemManager.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
 		};
-		100000000000000000000400 /* Views */ = {
+		E00000000000000000000003 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				100000000000000000000008 /* FileBrowserView.swift */,
-				100000000000000000000016 /* FileActionsView.swift */,
-				100000000000000000000600 /* Reader */,
+				B00000000000000000000004 /* FileBrowserView.swift */,
+				B0000000000000000000000B /* FileActionsView.swift */,
+				E00000000000000000000005 /* Reader */,
 			);
 			path = Views;
 			sourceTree = "<group>";
 		};
-		100000000000000000000500 /* Utils */ = {
+		E00000000000000000000004 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				100000000000000000000012 /* FileIndexCache.swift */,
-				100000000000000000000014 /* LargeFileLoader.swift */,
+				B00000000000000000000009 /* FileIndexCache.swift */,
+				B0000000000000000000000A /* LargeFileLoader.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
 		};
-		100000000000000000000600 /* Reader */ = {
+		E00000000000000000000005 /* Reader */ = {
 			isa = PBXGroup;
 			children = (
-				10000000000000000000000A /* ReaderContainerView.swift */,
-				10000000000000000000000C /* MarkdownReaderView.swift */,
-				10000000000000000000000E /* JSONReaderView.swift */,
-				100000000000000000000010 /* CodeReaderView.swift */,
+				B00000000000000000000005 /* ReaderContainerView.swift */,
+				B00000000000000000000006 /* MarkdownReaderView.swift */,
+				B00000000000000000000007 /* JSONReaderView.swift */,
+				B00000000000000000000008 /* CodeReaderView.swift */,
 			);
 			path = Reader;
+			sourceTree = "<group>";
+		};
+		E00000000000000000000006 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C00000000000000000000001 /* MDReader.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E00000000000000000000007 /* Main Group */ = {
+			isa = PBXGroup;
+			children = (
+				E00000000000000000000001 /* MDReader */,
+				E00000000000000000000006 /* Products */,
+			);
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		100000000000000000000700 /* MDReader */ = {
+		F00000000000000000000001 /* MDReader */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 100000000000000000000800 /* Build configuration list for PBXNativeTarget "MDReader" */;
+			buildConfigurationList = F00000000000000000000004 /* Build configuration list for PBXNativeTarget "MDReader" */;
 			buildPhases = (
-				100000000000000000000900 /* Sources */,
-				100000000000000000000100 /* Frameworks */,
-				100000000000000000000A00 /* Resources */,
+				F00000000000000000000002 /* Sources */,
+				D00000000000000000000001 /* Frameworks */,
+				F00000000000000000000003 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -117,25 +133,25 @@
 			);
 			name = MDReader;
 			productName = MDReader;
-			productReference = 100000000000000000000001 /* MDReader.app */;
+			productReference = C00000000000000000000001 /* MDReader.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		100000000000000000000B00 /* Project object */ = {
+		F00000000000000000000005 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
-					100000000000000000000700 = {
+					F00000000000000000000001 = {
 						CreatedOnToolsVersion = 15.0;
 					};
 				};
 			};
-			buildConfigurationList = 100000000000000000000C00 /* Build configuration list for PBXProject "MDReader" */;
+			buildConfigurationList = F00000000000000000000006 /* Build configuration list for PBXProject "MDReader" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -143,18 +159,18 @@
 				en,
 				Base,
 			);
-			mainGroup = 100000000000000000000D00;
-			productRefGroup = 100000000000000000000E00 /* Products */;
+			mainGroup = E00000000000000000000007 /* Main Group */;
+			productRefGroup = E00000000000000000000006 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				100000000000000000000700 /* MDReader */,
+				F00000000000000000000001 /* MDReader */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		100000000000000000000A00 /* Resources */ = {
+		F00000000000000000000003 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -164,28 +180,28 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		100000000000000000000900 /* Sources */ = {
+		F00000000000000000000002 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				100000000000000000000001 /* MDReaderApp.swift in Sources */,
-				100000000000000000000003 /* ContentView.swift in Sources */,
-				100000000000000000000005 /* FileSystemManager.swift in Sources */,
-				100000000000000000000007 /* FileBrowserView.swift in Sources */,
-				100000000000000000000009 /* ReaderContainerView.swift in Sources */,
-				10000000000000000000000B /* MarkdownReaderView.swift in Sources */,
-				10000000000000000000000D /* JSONReaderView.swift in Sources */,
-				10000000000000000000000F /* CodeReaderView.swift in Sources */,
-				100000000000000000000011 /* FileIndexCache.swift in Sources */,
-				100000000000000000000013 /* LargeFileLoader.swift in Sources */,
-				100000000000000000000015 /* FileActionsView.swift in Sources */,
+				A00000000000000000000001 /* MDReaderApp.swift in Sources */,
+				A00000000000000000000002 /* ContentView.swift in Sources */,
+				A00000000000000000000003 /* FileSystemManager.swift in Sources */,
+				A00000000000000000000004 /* FileBrowserView.swift in Sources */,
+				A00000000000000000000005 /* ReaderContainerView.swift in Sources */,
+				A00000000000000000000006 /* MarkdownReaderView.swift in Sources */,
+				A00000000000000000000007 /* JSONReaderView.swift in Sources */,
+				A00000000000000000000008 /* CodeReaderView.swift in Sources */,
+				A00000000000000000000009 /* FileIndexCache.swift in Sources */,
+				A0000000000000000000000A /* LargeFileLoader.swift in Sources */,
+				A0000000000000000000000B /* FileActionsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		100000000000000000000F00 /* Debug */ = {
+		F00000000000000000000007 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -214,7 +230,7 @@
 			};
 			name = Debug;
 		};
-		100000000000000000001000 /* Release */ = {
+		F00000000000000000000008 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -243,7 +259,7 @@
 			};
 			name = Release;
 		};
-		100000000000000000001100 /* Debug */ = {
+		F00000000000000000000009 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -306,7 +322,7 @@
 			};
 			name = Debug;
 		};
-		100000000000000000001200 /* Release */ = {
+		F0000000000000000000000A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -365,25 +381,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		100000000000000000000800 /* Build configuration list for PBXNativeTarget "MDReader" */ = {
+		F00000000000000000000004 /* Build configuration list for PBXNativeTarget "MDReader" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				100000000000000000000F00 /* Debug */,
-				100000000000000000001000 /* Release */,
+				F00000000000000000000007 /* Debug */,
+				F00000000000000000000008 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		100000000000000000000C00 /* Build configuration list for PBXProject "MDReader" */ = {
+		F00000000000000000000006 /* Build configuration list for PBXProject "MDReader" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				100000000000000000001100 /* Debug */,
-				100000000000000000001200 /* Release */,
+				F00000000000000000000009 /* Debug */,
+				F0000000000000000000000A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 100000000000000000000B00 /* Project object */;
+	rootObject = F00000000000000000000005 /* Project object */;
 }

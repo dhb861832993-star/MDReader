@@ -109,7 +109,7 @@ struct ZoomableImageView: View {
         ScrollView([.horizontal, .vertical]) {
             Image(uiImage: image)
                 .resizable()
-                .scaledToFit
+                .scaledToFit()
                 .scaleEffect(scale)
                 .gesture(
                     MagnificationGesture()
@@ -127,13 +127,13 @@ struct CodeTextView: UIViewRepresentable {
     let language: String
 
     @AppStorage("readerFontSize") private var fontSize: Double = 14
+    @AppStorage("readerTheme") private var theme: ReaderTheme = .light
 
     func makeUIView(context: Context) -> UITextView {
         let textView = UITextView()
         textView.isEditable = false
         textView.isSelectable = true
         textView.showsVerticalScrollIndicator = true
-        textView.backgroundColor = UIColor(red: 0.98, green: 0.98, blue: 0.98, alpha: 1.0)
         textView.font = UIFont.monospacedSystemFont(ofSize: CGFloat(fontSize), weight: .regular)
         textView.textContainerInset = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
         textView.text = content
@@ -141,36 +141,43 @@ struct CodeTextView: UIViewRepresentable {
     }
 
     func updateUIView(_ textView: UITextView, context: Context) {
+        // 应用主题背景色
+        textView.backgroundColor = UIColor(theme.backgroundColor)
+
         // 代码高亮
-        textView.attributedText = SyntaxHighlighter.highlight(content, language: language, fontSize: CGFloat(fontSize))
+        textView.attributedText = SyntaxHighlighter.highlight(content, language: language, fontSize: CGFloat(fontSize), theme: theme)
     }
 }
 
 // MARK: - 语法高亮器
 class SyntaxHighlighter {
-    static func highlight(_ code: String, language: String, fontSize: CGFloat) -> NSAttributedString {
+    static func highlight(_ code: String, language: String, fontSize: CGFloat, theme: ReaderTheme) -> NSAttributedString {
         let result = NSMutableAttributedString(string: code)
         let font = UIFont.monospacedSystemFont(ofSize: fontSize, weight: .regular)
+
+        // 根据主题设置基础颜色
+        let textColor: UIColor = UIColor(theme.textColor)
+        let isDark = (theme == .dark || theme == .midnight)
 
         // 基础属性
         let baseAttributes: [NSAttributedString.Key: Any] = [
             .font: font,
-            .foregroundColor: UIColor.label
+            .foregroundColor: textColor
         ]
         result.addAttributes(baseAttributes, range: NSRange(location: 0, length: result.length))
 
         // 根据语言应用高亮规则
         switch language {
         case "json":
-            highlightJSON(result, code: code, fontSize: fontSize)
+            highlightJSON(result, code: code, fontSize: fontSize, isDark: isDark)
         case "swift":
-            highlightSwift(result, code: code, fontSize: fontSize)
+            highlightSwift(result, code: code, fontSize: fontSize, isDark: isDark)
         case "py", "python":
-            highlightPython(result, code: code, fontSize: fontSize)
+            highlightPython(result, code: code, fontSize: fontSize, isDark: isDark)
         case "js", "ts", "javascript", "typescript":
-            highlightJavaScript(result, code: code, fontSize: fontSize)
+            highlightJavaScript(result, code: code, fontSize: fontSize, isDark: isDark)
         case "yaml", "yml":
-            highlightYAML(result, code: code, fontSize: fontSize)
+            highlightYAML(result, code: code, fontSize: fontSize, isDark: isDark)
         default:
             break
         }
@@ -178,88 +185,115 @@ class SyntaxHighlighter {
         return result
     }
 
-    private static func highlightJSON(_ result: NSMutableAttributedString, code: String, fontSize: CGFloat) {
+    private static func highlightJSON(_ result: NSMutableAttributedString, code: String, fontSize: CGFloat, isDark: Bool) {
+        let stringColor: UIColor = isDark ? UIColor(red: 0.5, green: 0.9, blue: 0.5, alpha: 1.0) : .systemGreen
+        let numberColor: UIColor = isDark ? UIColor(red: 1.0, green: 0.7, blue: 0.4, alpha: 1.0) : .systemOrange
+        let keywordColor: UIColor = isDark ? UIColor(red: 1.0, green: 0.5, blue: 0.8, alpha: 1.0) : .systemPink
+        let keyColor: UIColor = isDark ? UIColor(red: 0.5, green: 0.7, blue: 1.0, alpha: 1.0) : .systemBlue
+
         // 字符串
-        applyPattern(result, pattern: "\"[^\"\\\\]*(?:\\\\.[^\"\\\\]*)*\"", color: .systemGreen)
+        applyPattern(result, pattern: "\"[^\"\\\\]*(?:\\\\.[^\"\\\\]*)*\"", color: stringColor)
         // 数字
-        applyPattern(result, pattern: "\\b-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?\\b", color: .systemOrange)
+        applyPattern(result, pattern: "\\b-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?\\b", color: numberColor)
         // 关键字
-        applyPattern(result, pattern: "\\b(true|false|null)\\b", color: .systemPink)
+        applyPattern(result, pattern: "\\b(true|false|null)\\b", color: keywordColor)
         // 键（字符串后跟冒号）
-        applyPattern(result, pattern: "\"[^\"]+\"(?=\\s*:)", color: .systemBlue)
+        applyPattern(result, pattern: "\"[^\"]+\"(?=\\s*:)", color: keyColor)
     }
 
-    private static func highlightSwift(_ result: NSMutableAttributedString, code: String, fontSize: CGFloat) {
+    private static func highlightSwift(_ result: NSMutableAttributedString, code: String, fontSize: CGFloat, isDark: Bool) {
+        let keywordColor: UIColor = isDark ? UIColor(red: 1.0, green: 0.5, blue: 0.8, alpha: 1.0) : .systemPink
+        let stringColor: UIColor = isDark ? UIColor(red: 1.0, green: 0.6, blue: 0.6, alpha: 1.0) : .systemRed
+        let commentColor: UIColor = isDark ? .lightGray : .systemGray
+        let typeColor: UIColor = isDark ? UIColor(red: 1.0, green: 0.7, blue: 0.4, alpha: 1.0) : .systemOrange
+
         let keywords = ["import", "class", "struct", "enum", "protocol", "extension",
                        "func", "var", "let", "if", "else", "guard", "switch", "case",
                        "for", "while", "return", "throw", "try", "catch", "init",
                        "self", "super", "public", "private", "internal", "static"]
 
         for keyword in keywords {
-            applyPattern(result, pattern: "\\b\(keyword)\\b", color: .systemPink)
+            applyPattern(result, pattern: "\\b\(keyword)\\b", color: keywordColor)
         }
 
         // 字符串
-        applyPattern(result, pattern: "\"[^\"\\\\]*(?:\\\\.[^\"\\\\]*)*\"", color: .systemRed)
+        applyPattern(result, pattern: "\"[^\"\\\\]*(?:\\\\.[^\"\\\\]*)*\"", color: stringColor)
         // 注释
-        applyPattern(result, pattern: "//.*$", color: .systemGray, options: .anchorsMatchLines)
+        applyPattern(result, pattern: "//.*$", color: commentColor, options: .anchorsMatchLines)
         // 多行注释
-        applyPattern(result, pattern: "/\\*.*?\\*/", color: .systemGray, options: .dotMatchesLineSeparators)
+        applyPattern(result, pattern: "/\\*.*?\\*/", color: commentColor, options: .dotMatchesLineSeparators)
         // 类型名（首字母大写的标识符）
-        applyPattern(result, pattern: "\\b[A-Z][a-zA-Z0-9_]*\\b", color: .systemOrange)
+        applyPattern(result, pattern: "\\b[A-Z][a-zA-Z0-9_]*\\b", color: typeColor)
     }
 
-    private static func highlightPython(_ result: NSMutableAttributedString, code: String, fontSize: CGFloat) {
+    private static func highlightPython(_ result: NSMutableAttributedString, code: String, fontSize: CGFloat, isDark: Bool) {
+        let keywordColor: UIColor = isDark ? UIColor(red: 1.0, green: 0.5, blue: 0.8, alpha: 1.0) : .systemPink
+        let stringColor: UIColor = isDark ? UIColor(red: 0.5, green: 0.9, blue: 0.5, alpha: 1.0) : .systemGreen
+        let commentColor: UIColor = isDark ? .lightGray : .systemGray
+        let funcColor: UIColor = isDark ? UIColor(red: 0.5, green: 0.7, blue: 1.0, alpha: 1.0) : .systemBlue
+        let classColor: UIColor = isDark ? UIColor(red: 1.0, green: 0.7, blue: 0.4, alpha: 1.0) : .systemOrange
+
         let keywords = ["def", "class", "if", "elif", "else", "for", "while",
                        "try", "except", "finally", "with", "import", "from",
                        "return", "yield", "pass", "break", "continue", "lambda",
                        "None", "True", "False", "and", "or", "not", "in", "is"]
 
         for keyword in keywords {
-            applyPattern(result, pattern: "\\b\(keyword)\\b", color: .systemPink)
+            applyPattern(result, pattern: "\\b\(keyword)\\b", color: keywordColor)
         }
 
         // 字符串
-        applyPattern(result, pattern: "[rfb]*\"[^\"\\\\]*(?:\\\\.[^\"\\\\]*)*\"", color: .systemGreen)
-        applyPattern(result, pattern: "[rfb]*'[^'\\\\]*(?:\\\\.[^'\\\\]*)*'", color: .systemGreen)
+        applyPattern(result, pattern: "[rfb]*\"[^\"\\\\]*(?:\\\\.[^\"\\\\]*)*\"", color: stringColor)
+        applyPattern(result, pattern: "[rfb]*'[^'\\\\]*(?:\\\\.[^'\\\\]*)*'", color: stringColor)
         // 注释
-        applyPattern(result, pattern: "#.*$", color: .systemGray, options: .anchorsMatchLines)
+        applyPattern(result, pattern: "#.*$", color: commentColor, options: .anchorsMatchLines)
         // 函数定义
-        applyPattern(result, pattern: "(?<=def\\s)\\w+", color: .systemBlue)
+        applyPattern(result, pattern: "(?<=def\\s)\\w+", color: funcColor)
         // 类定义
-        applyPattern(result, pattern: "(?<=class\\s)\\w+", color: .systemOrange)
+        applyPattern(result, pattern: "(?<=class\\s)\\w+", color: classColor)
     }
 
-    private static func highlightJavaScript(_ result: NSMutableAttributedString, code: String, fontSize: CGFloat) {
+    private static func highlightJavaScript(_ result: NSMutableAttributedString, code: String, fontSize: CGFloat, isDark: Bool) {
+        let keywordColor: UIColor = isDark ? UIColor(red: 1.0, green: 0.5, blue: 0.8, alpha: 1.0) : .systemPink
+        let stringColor: UIColor = isDark ? UIColor(red: 0.5, green: 0.9, blue: 0.5, alpha: 1.0) : .systemGreen
+        let commentColor: UIColor = isDark ? .lightGray : .systemGray
+        let funcColor: UIColor = isDark ? UIColor(red: 0.5, green: 0.7, blue: 1.0, alpha: 1.0) : .systemBlue
+
         let keywords = ["const", "let", "var", "function", "class", "if", "else",
                        "for", "while", "return", "import", "export", "from",
                        "async", "await", "try", "catch", "new", "this", "typeof"]
 
         for keyword in keywords {
-            applyPattern(result, pattern: "\\b\(keyword)\\b", color: .systemPink)
+            applyPattern(result, pattern: "\\b\(keyword)\\b", color: keywordColor)
         }
 
         // 字符串
-        applyPattern(result, pattern: "\"[^\"\\\\]*(?:\\\\.[^\"\\\\]*)*\"", color: .systemGreen)
-        applyPattern(result, pattern: "'[^'\\\\]*(?:\\\\.[^'\\\\]*)*'", color: .systemGreen)
-        applyPattern(result, pattern: "`[^`\\\\]*(?:\\\\.[^`\\\\]*)*`", color: .systemGreen)
+        applyPattern(result, pattern: "\"[^\"\\\\]*(?:\\\\.[^\"\\\\]*)*\"", color: stringColor)
+        applyPattern(result, pattern: "'[^'\\\\]*(?:\\\\.[^'\\\\]*)*'", color: stringColor)
+        applyPattern(result, pattern: "`[^`\\\\]*(?:\\\\.[^`\\\\]*)*`", color: stringColor)
         // 注释
-        applyPattern(result, pattern: "//.*$", color: .systemGray, options: .anchorsMatchLines)
+        applyPattern(result, pattern: "//.*$", color: commentColor, options: .anchorsMatchLines)
         // 函数调用
-        applyPattern(result, pattern: "\\w+(?=\\s*\\()", color: .systemBlue)
+        applyPattern(result, pattern: "\\w+(?=\\s*\\()", color: funcColor)
     }
 
-    private static func highlightYAML(_ result: NSMutableAttributedString, code: String, fontSize: CGFloat) {
+    private static func highlightYAML(_ result: NSMutableAttributedString, code: String, fontSize: CGFloat, isDark: Bool) {
+        let keyColor: UIColor = isDark ? UIColor(red: 0.5, green: 0.7, blue: 1.0, alpha: 1.0) : .systemBlue
+        let commentColor: UIColor = isDark ? .lightGray : .systemGray
+        let keywordColor: UIColor = isDark ? UIColor(red: 1.0, green: 0.5, blue: 0.8, alpha: 1.0) : .systemPink
+        let numberColor: UIColor = isDark ? UIColor(red: 1.0, green: 0.7, blue: 0.4, alpha: 1.0) : .systemOrange
+        let stringColor: UIColor = isDark ? UIColor(red: 0.5, green: 0.9, blue: 0.5, alpha: 1.0) : .systemGreen
+
         // 键
-        applyPattern(result, pattern: "^[a-zA-Z_][a-zA-Z0-9_]*(?=\\s*:)", color: .systemBlue, options: .anchorsMatchLines)
+        applyPattern(result, pattern: "^[a-zA-Z_][a-zA-Z0-9_]*(?=\\s*:)", color: keyColor, options: .anchorsMatchLines)
         // 注释
-        applyPattern(result, pattern: "#.*$", color: .systemGray, options: .anchorsMatchLines)
+        applyPattern(result, pattern: "#.*$", color: commentColor, options: .anchorsMatchLines)
         // 布尔值和null
-        applyPattern(result, pattern: "\\b(true|false|yes|no|on|off|null|~)\\b", color: .systemPink)
+        applyPattern(result, pattern: "\\b(true|false|yes|no|on|off|null|~)\\b", color: keywordColor)
         // 数字
-        applyPattern(result, pattern: "\\b-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?\\b", color: .systemOrange)
+        applyPattern(result, pattern: "\\b-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?\\b", color: numberColor)
         // 字符串
-        applyPattern(result, pattern: "\"[^\"]*\"|'[^']*'", color: .systemGreen)
+        applyPattern(result, pattern: "\"[^\"]*\"|'[^']*'", color: stringColor)
     }
 
     private static func applyPattern(_ result: NSMutableAttributedString,

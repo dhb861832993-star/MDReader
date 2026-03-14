@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 /// 大文件分页加载管理器
 /// 支持分片读取，虚拟滚动
