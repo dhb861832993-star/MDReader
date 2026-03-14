@@ -6,25 +6,27 @@ struct JSONReaderView: View {
     @State private var content: String = ""
     @State private var isLoading = true
     @State private var showTree = true
+    @AppStorage("readerTheme") private var theme: ReaderTheme = .light
 
     var body: some View {
-        NavigationStack {
-            ZStack {
-                if isLoading {
-                    ProgressView()
-                } else if showTree {
-                    JSONTreeView(jsonString: content)
-                } else {
-                    CodeTextView(content: content, language: "json")
-                }
+        ZStack {
+            theme.backgroundColor
+                .ignoresSafeArea()
+
+            if isLoading {
+                ProgressView()
+            } else if showTree {
+                JSONTreeView(jsonString: content)
+            } else {
+                CodeTextView(content: content, language: "json")
             }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Toggle(isOn: $showTree) {
-                        Image(systemName: showTree ? "list.bullet.indent" : "doc.plaintext")
-                    }
-                    .toggleStyle(.button)
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Toggle(isOn: $showTree) {
+                    Image(systemName: showTree ? "list.bullet.indent" : "doc.plaintext")
                 }
+                .toggleStyle(.button)
             }
         }
         .task {
@@ -47,12 +49,13 @@ struct JSONTreeView: View {
     let jsonString: String
     @State private var rootNode: JSONNode?
     @State private var expandedNodes: Set<String> = []
+    @AppStorage("readerTheme") private var theme: ReaderTheme = .light
 
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 0) {
                 if let root = rootNode {
-                    JSONNodeView(node: root, level: 0, expandedNodes: $expandedNodes)
+                    JSONNodeView(node: root, level: 0, expandedNodes: $expandedNodes, theme: theme)
                 } else {
                     Text("无效的 JSON")
                         .foregroundColor(.red)
@@ -60,6 +63,7 @@ struct JSONTreeView: View {
             }
             .padding()
         }
+        .background(theme.backgroundColor)
         .task {
             parseJSON()
         }
@@ -138,13 +142,13 @@ enum JSONValue {
         }
     }
 
-    var color: Color {
+    func color(isDark: Bool) -> Color {
         switch self {
-        case .object: return .blue
-        case .array: return .purple
-        case .string: return .green
-        case .number: return .orange
-        case .bool: return .pink
+        case .object: return isDark ? Color(red: 0.5, green: 0.7, blue: 1.0) : .blue
+        case .array: return isDark ? Color(red: 0.8, green: 0.5, blue: 1.0) : .purple
+        case .string: return isDark ? Color(red: 0.5, green: 0.9, blue: 0.5) : .green
+        case .number: return isDark ? Color(red: 1.0, green: 0.7, blue: 0.4) : .orange
+        case .bool: return isDark ? Color(red: 1.0, green: 0.5, blue: 0.8) : .pink
         case .null: return .gray
         }
     }
@@ -161,9 +165,14 @@ struct JSONNodeView: View {
     let node: JSONNode
     let level: Int
     @Binding var expandedNodes: Set<String>
+    let theme: ReaderTheme
 
     var isExpanded: Bool {
         expandedNodes.contains(node.id)
+    }
+
+    var isDark: Bool {
+        theme == .dark || theme == .midnight
     }
 
     var body: some View {
@@ -178,7 +187,7 @@ struct JSONNodeView: View {
                     HStack(spacing: 0) {
                         ForEach(0..<level, id: \.self) { _ in
                             Rectangle()
-                                .fill(Color.gray.opacity(0.2))
+                                .fill(isDark ? Color.white.opacity(0.1) : Color.gray.opacity(0.2))
                                 .frame(width: 20, height: 28)
                         }
                     }
@@ -187,7 +196,7 @@ struct JSONNodeView: View {
                     if node.value.isContainer {
                         Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
                             .font(.caption)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(theme.textColor.opacity(0.6))
                             .frame(width: 16)
                     } else {
                         Rectangle()
@@ -198,15 +207,15 @@ struct JSONNodeView: View {
                     // Key
                     Text(node.key)
                         .font(.system(size: 14, design: .monospaced))
-                        .foregroundColor(.primary)
+                        .foregroundColor(theme.textColor)
 
                     Text(":")
-                        .foregroundColor(.secondary)
+                        .foregroundColor(theme.textColor.opacity(0.6))
 
                     // Value
                     Text(node.value.displayText)
                         .font(.system(size: 14, design: .monospaced))
-                        .foregroundColor(node.value.color)
+                        .foregroundColor(node.value.color(isDark: isDark))
                         .lineLimit(1)
                 }
                 .frame(height: 32)
@@ -217,7 +226,7 @@ struct JSONNodeView: View {
             // Children
             if isExpanded && !node.children.isEmpty {
                 ForEach(node.children) { child in
-                    JSONNodeView(node: child, level: level + 1, expandedNodes: $expandedNodes)
+                    JSONNodeView(node: child, level: level + 1, expandedNodes: $expandedNodes, theme: theme)
                 }
             }
         }

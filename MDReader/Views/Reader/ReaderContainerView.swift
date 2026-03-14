@@ -23,16 +23,22 @@ struct ReaderContainerView: View {
             }
         }
         .toolbar {
-            ToolbarItemGroup(placement: .navigationBarTrailing) {
-                Button(action: { showOutline.toggle() }) {
-                    Image(systemName: "list.bullet.rectangle")
-                }
-
-                Button(action: { showReaderSettings.toggle() }) {
-                    Image(systemName: "textformat.size")
-                }
-
+            ToolbarItem(placement: .navigationBarTrailing) {
                 Menu {
+                    Button {
+                        showOutline = true
+                    } label: {
+                        Label("大纲", systemImage: "list.bullet.rectangle")
+                    }
+
+                    Button {
+                        showReaderSettings = true
+                    } label: {
+                        Label("阅读设置", systemImage: "textformat.size")
+                    }
+
+                    Divider()
+
                     Button {
                         UIPasteboard.general.string = file.url.absoluteString
                     } label: {
@@ -69,35 +75,6 @@ struct ReaderSettingsView: View {
     @AppStorage("readerLineSpacing") private var lineSpacing: Double = 1.5
     @AppStorage("readerTheme") private var theme: ReaderTheme = .light
     @Environment(\.dismiss) private var dismiss
-
-    enum ReaderTheme: String, CaseIterable {
-        case light, sepia, dark, midnight
-
-        var name: String {
-            switch self {
-            case .light: return "浅色"
-            case .sepia: return "暖色"
-            case .dark: return "深色"
-            case .midnight: return "午夜"
-            }
-        }
-
-        var backgroundColor: Color {
-            switch self {
-            case .light: return .white
-            case .sepia: return Color(red: 0.98, green: 0.95, blue: 0.91)
-            case .dark: return Color(red: 0.11, green: 0.11, blue: 0.12)
-            case .midnight: return Color(red: 0.05, green: 0.08, blue: 0.15)
-            }
-        }
-
-        var textColor: Color {
-            switch self {
-            case .light, .sepia: return .primary
-            case .dark, .midnight: return .white
-            }
-        }
-    }
 
     var body: some View {
         NavigationView {
@@ -156,16 +133,66 @@ struct ReaderSettingsView: View {
     }
 }
 
+// MARK: - 大纲项模型
+struct OutlineItem: Identifiable {
+    let id = UUID()
+    let level: Int
+    let title: String
+    let lineNumber: Int
+}
+
+// MARK: - 大纲视图
 struct OutlineView: View {
     let file: FileItem
     @Environment(\.dismiss) private var dismiss
+    @State private var outlineItems: [OutlineItem] = []
+    @State private var isLoading = true
 
     var body: some View {
         NavigationView {
-            List {
-                Text("文档大纲")
-                    .font(.headline)
-                // 根据文档内容解析大纲
+            Group {
+                if isLoading {
+                    ProgressView("加载中...")
+                } else if outlineItems.isEmpty {
+                    VStack(spacing: 16) {
+                        Image(systemName: "list.bullet.rectangle")
+                            .font(.system(size: 48))
+                            .foregroundColor(.secondary)
+                        Text("未找到标题")
+                            .font(.headline)
+                            .foregroundColor(.secondary)
+                        Text("文档中没有标题（# 开头的行）")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 40)
+                    }
+                } else {
+                    List {
+                        ForEach(outlineItems) { item in
+                            HStack(spacing: 0) {
+                                // 缩进
+                                ForEach(0..<item.level, id: \.self) { _ in
+                                    Rectangle()
+                                        .fill(Color.clear)
+                                        .frame(width: 20)
+                                }
+
+                                // 标题
+                                Text(item.title)
+                                    .font(item.level == 1 ? .headline : (item.level == 2 ? .subheadline : .body))
+                                    .foregroundColor(item.level == 1 ? .primary : .secondary)
+                            }
+                            .padding(.vertical, 8)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                // TODO: 跳转到对应行
+                                dismiss()
+                            }
+                        }
+                    }
+                    .listStyle(.plain)
+                }
             }
             .navigationTitle("大纲")
             .navigationBarTitleDisplayMode(.inline)
@@ -177,5 +204,51 @@ struct OutlineView: View {
                 }
             }
         }
+        .task {
+            await loadOutline()
+        }
+    }
+
+    private func loadOutline() async {
+        isLoading = true
+        defer { isLoading = false }
+
+        do {
+            let content = try await FileSystemManager.shared.loadFileContent(file)
+            outlineItems = parseOutline(from: content)
+        } catch {
+            outlineItems = []
+        }
+    }
+
+    private func parseOutline(from content: String) -> [OutlineItem] {
+        var items: [OutlineItem] = []
+        let lines = content.components(separatedBy: .newlines)
+
+        for (index, line) in lines.enumerated() {
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+
+            // 匹配标题 # ## ### 等
+            if trimmed.hasPrefix("#") {
+                var level = 0
+                for char in trimmed {
+                    if char == "#" {
+                        level += 1
+                    } else {
+                        break
+                    }
+                }
+
+                // 只处理 1-6 级标题
+                if level >= 1 && level <= 6 {
+                    let title = String(trimmed.dropFirst(level).trimmingCharacters(in: .whitespaces))
+                    if !title.isEmpty {
+                        items.append(OutlineItem(level: level, title: title, lineNumber: index + 1))
+                    }
+                }
+            }
+        }
+
+        return items
     }
 }

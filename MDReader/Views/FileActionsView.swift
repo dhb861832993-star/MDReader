@@ -52,7 +52,6 @@ struct DocumentImporterView: UIViewControllerRepresentable {
 struct FileActionSheet: View {
     let file: FileItem
     @Binding var isPresented: Bool
-    @EnvironmentObject var fileManager: FileSystemManager
 
     var body: some View {
         VStack(spacing: 0) {
@@ -126,7 +125,7 @@ struct FileActionSheet: View {
     }
 
     private func toggleFavorite() {
-        fileManager.toggleFavorite(file)
+        FileSystemManager.shared.toggleFavorite(file)
         isPresented = false
     }
 

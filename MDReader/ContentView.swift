@@ -1,35 +1,47 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var fileManager = FileSystemManager.shared
     @State private var selectedFile: FileItem?
-    @State private var columnVisibility = NavigationSplitViewVisibility.automatic
 
     var body: some View {
-        NavigationSplitView(columnVisibility: $columnVisibility) {
+        ZStack {
             FileBrowserView(selectedFile: $selectedFile)
-                .navigationTitle("MD阅读器")
-        } detail: {
+
+            // 阅读器全屏覆盖
             if let file = selectedFile {
-                ReaderContainerView(file: file)
-            } else {
-                EmptyStateView()
+                ReaderFullScreenView(file: file) {
+                    selectedFile = nil
+                }
+                .transition(.move(edge: .trailing))
             }
         }
-        .environmentObject(fileManager)
+        .onChange(of: selectedFile) { _, newFile in
+            if let file = newFile {
+                FileSystemManager.shared.recordFileOpened(file)
+            }
+        }
     }
 }
 
-struct EmptyStateView: View {
+// MARK: - 全屏阅读器视图
+struct ReaderFullScreenView: View {
+    let file: FileItem
+    let onClose: () -> Void
+
     var body: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "doc.text")
-                .font(.system(size: 64))
-                .foregroundColor(.secondary)
-            Text("选择文件开始阅读")
-                .font(.title2)
-                .foregroundColor(.secondary)
+        NavigationStack {
+            ReaderContainerView(file: file)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button(action: onClose) {
+                            Image(systemName: "chevron.left")
+                            Text("返回")
+                        }
+                    }
+                }
         }
+        .background(Color(.systemBackground))
     }
 }
 
